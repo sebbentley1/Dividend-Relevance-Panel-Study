@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dividend Relevance — Panel Econometric Study</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,600;1,8..60,300&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink:     #1c1917;
+  --paper:   #fafaf8;
+  --accent:  #b45309;
+  --rule:    #e7e0d5;
+  --muted:   #78716c;
+  --sig:     #15803d;
+  --warn:    #991b1b;
+  --card-bg: #1c1917;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: 'Source Serif 4', Georgia, serif;
+  font-size: 16px;
+  line-height: 1.8;
+}
+
+/* ── HEADER ── */
+header {
+  background: var(--ink);
+  color: var(--paper);
+  padding: 72px 80px 56px;
+  position: relative;
+  overflow: hidden;
+}
+header::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    90deg, transparent, transparent 80px,
+    rgba(180,83,9,.04) 80px, rgba(180,83,9,.04) 81px
+  );
+  pointer-events: none;
+}
+.kicker {
+  font-size: 11px;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 18px;
+  font-weight: 400;
+}
+header h1 {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: clamp(26px, 3.5vw, 46px);
+  font-weight: 700;
+  line-height: 1.12;
+  max-width: 680px;
+  margin-bottom: 24px;
+  letter-spacing: -.3px;
+}
+.subtitle {
+  font-size: 15px;
+  color: rgba(250,250,248,.6);
+  max-width: 560px;
+  font-weight: 300;
+  line-height: 1.7;
+}
+.meta-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0;
+  margin-top: 40px;
+  border-top: 1px solid rgba(250,250,248,.12);
+  padding-top: 24px;
+}
+.meta-item {
+  padding-right: 40px;
+  margin-right: 40px;
+  border-right: 1px solid rgba(250,250,248,.12);
+}
+.meta-item:last-child { border-right: none; }
+.meta-label {
+  font-size: 10px;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: rgba(250,250,248,.4);
+  display: block;
+  margin-bottom: 4px;
+}
+.meta-value {
+  font-family: 'Playfair Display', serif;
+  font-size: 20px;
+  color: var(--accent);
+  font-weight: 600;
+}
+
+/* ── LAYOUT ── */
+.container { max-width: 820px; margin: 0 auto; padding: 0 48px; }
+
+/* ── SECTIONS ── */
+section {
+  padding: 56px 0 0;
+  border-top: 1px solid var(--rule);
+  margin-top: 56px;
+}
+section:first-of-type { border-top: none; margin-top: 0; padding-top: 64px; }
+
+.section-label {
+  font-size: 10px;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 12px;
+  font-weight: 400;
+}
+h2 {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 28px;
+  font-weight: 600;
+  margin-bottom: 22px;
+  letter-spacing: -.2px;
+  line-height: 1.2;
+}
+h3 {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 18px;
+  font-weight: 600;
+  margin: 32px 0 12px;
+}
+p {
+  color: #2c2825;
+  max-width: 680px;
+  margin-bottom: 16px;
+  font-weight: 300;
+}
+p strong { font-weight: 600; color: var(--ink); }
+
+/* ── STAT CARDS ── */
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 12px;
+  margin: 28px 0;
+}
+.card {
+  background: var(--card-bg);
+  color: var(--paper);
+  padding: 20px 18px 16px;
+  border-radius: 2px;
+  position: relative;
+  overflow: hidden;
+}
+.card::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0;
+  width: 100%; height: 2px;
+  background: var(--accent);
+}
+.card-val {
+  font-family: 'Playfair Display', serif;
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--accent);
+  line-height: 1;
+  margin-bottom: 6px;
+}
+.card-lbl {
+  font-size: 10.5px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: rgba(250,250,248,.5);
+}
+
+/* ── TABLES ── */
+.table-wrap { overflow-x: auto; margin: 24px 0; }
+table { width: 100%; border-collapse: collapse; font-size: 14px; }
+thead tr { background: var(--ink); color: var(--paper); }
+thead th {
+  padding: 10px 14px;
+  text-align: left;
+  font-family: 'Source Serif 4', serif;
+  font-weight: 400;
+  font-size: 11px;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+thead th.r { text-align: right; }
+tbody tr:nth-child(even) { background: rgba(0,0,0,.025); }
+tbody tr:hover { background: rgba(180,83,9,.06); }
+td {
+  padding: 9px 14px;
+  border-bottom: 1px solid var(--rule);
+  color: var(--ink);
+  font-size: 13.5px;
+}
+td.r { text-align: right; font-variant-numeric: tabular-nums; }
+.insig { color: var(--muted); }
+.sig   { color: var(--sig); font-weight: 600; }
+.warn  { color: var(--warn); font-weight: 600; }
+
+/* ── CALLOUT BOXES ── */
+.callout {
+  border-left: 3px solid var(--accent);
+  padding: 18px 22px;
+  margin: 28px 0;
+  background: rgba(180,83,9,.04);
+}
+.callout p { margin-bottom: 0; max-width: 100%; }
+.callout-label {
+  font-size: 10px;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+.verdict {
+  background: var(--ink);
+  color: var(--paper);
+  padding: 32px 36px;
+  margin: 40px 0 0;
+  border-left: 4px solid var(--accent);
+  border-radius: 2px;
+}
+.verdict h3 {
+  font-family: 'Playfair Display', serif;
+  color: var(--accent);
+  margin-top: 0;
+  margin-bottom: 12px;
+  font-size: 17px;
+}
+.verdict p { color: rgba(250,250,248,.82); max-width: 100%; font-weight: 300; margin-bottom: 0; }
+
+/* ── LIMITATION TAGS ── */
+.lim-item {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 20px;
+  align-items: flex-start;
+}
+.lim-tag {
+  background: var(--warn);
+  color: white;
+  font-size: 9px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 2px;
+  white-space: nowrap;
+  margin-top: 4px;
+  font-weight: 600;
+}
+.lim-tag.ok {
+  background: var(--sig);
+}
+.lim-body { flex: 1; }
+.lim-body p { margin-bottom: 0; }
+
+/* ── FOOTER ── */
+footer {
+  max-width: 820px;
+  margin: 80px auto 0;
+  padding: 24px 48px 48px;
+  border-top: 1px solid var(--rule);
+  font-size: 12px;
+  color: var(--muted);
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="kicker">Personal Project — Empirical Finance</div>
+  <h1>Does Dividend Policy Affect Firm Valuation? A Panel Econometric Study</h1>
+  <p class="subtitle">Testing the Modigliani-Miller dividend irrelevance proposition using a hybrid panel dataset of 25 large-cap US and UK equities, 2020–2024.</p>
+  <div class="meta-strip">
+    <div class="meta-item">
+      <span class="meta-label">Firms</span>
+      <span class="meta-value">25</span>
+    </div>
+    <div class="meta-item">
+      <span class="meta-label">Observations</span>
+      <span class="meta-value">102</span>
+    </div>
+    <div class="meta-item">
+      <span class="meta-label">Period</span>
+      <span class="meta-value">2020–24</span>
+    </div>
+    <div class="meta-item">
+      <span class="meta-label">Preferred Estimator</span>
+      <span class="meta-value">RE</span>
+    </div>
+  </div>
+</header>
+
+<div class="container">
+
+  <!-- OVERVIEW -->
+  <section>
+    <div class="section-label">Overview</div>
+    <h2>What This Project Is</h2>
+    <p>This is a self-directed empirical project built during my second year of a BSc Economics and Finance degree. The goal was to apply panel econometric methods to a real financial question — specifically, whether changes in a firm's dividend policy have a measurable effect on its market valuation.</p>
+    <p>The theoretical anchor is the <strong>Modigliani-Miller (1961) dividend irrelevance proposition</strong>, which argues that in frictionless markets, firm value is determined by earnings power and investment decisions, not by how those earnings are distributed to shareholders. This remains one of the most debated propositions in corporate finance, and I wanted to test it empirically rather than just describe it.</p>
+    <p>The project went through two iterations. The first version used only yfinance for data collection and had three methodological weaknesses I identified and corrected in the version documented here.</p>
+  </section>
+
+  <!-- METHODOLOGY -->
+  <section>
+    <div class="section-label">Section 1</div>
+    <h2>Data and Methodology</h2>
+
+    <h3>Sample</h3>
+    <p>The panel covers 25 large-cap value stocks across energy, banking, pharmaceuticals, consumer staples, telecoms, utilities, and industrials. Firms were selected to provide sector diversity while ensuring all are mature dividend-paying companies — the population for whom dividend policy decisions are most economically meaningful.</p>
+
+    <div class="cards">
+      <div class="card">
+        <div class="card-val">25</div>
+        <div class="card-lbl">Firms</div>
+      </div>
+      <div class="card">
+        <div class="card-val">5</div>
+        <div class="card-lbl">Years (2020–24)</div>
+      </div>
+      <div class="card">
+        <div class="card-val">102</div>
+        <div class="card-lbl">Observations</div>
+      </div>
+      <div class="card">
+        <div class="card-val">2</div>
+        <div class="card-lbl">Data Sources</div>
+      </div>
+    </div>
+
+    <h3>Data Sources — and an Honest Note on Their Limits</h3>
+    <p>Fundamental data (income statements, balance sheets, cash flows) for 15 firms was sourced from the <strong>SimFin bulk API</strong>, which provides clean, standardised annual financials. The remaining 10 firms — primarily UK-headquartered stocks and US banks not covered by SimFin's free tier — were sourced via the <strong>yfinance API</strong> using the same ratio construction methodology.</p>
+
+    <div class="callout">
+      <div class="callout-label">Data Limitation</div>
+      <p>The hybrid sourcing approach introduces a potential consistency risk: SimFin and yfinance may apply different accounting adjustments, particularly for non-US firms reporting under IFRS. I do not believe this materially affects the results — both sources pull from SEC/exchange filings — but it is a limitation a more rigorous study would address by using a single institutional data provider such as Compustat or Bloomberg.</p>
+    </div>
+
+    <h3>Variables</h3>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Variable</th><th>Symbol</th><th>Role</th><th>Construction</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Log Total Assets</td><td>Log_Assets</td><td>Dependent (Y)</td><td>ln(Total Assets)</td></tr>
+          <tr><td>Dividend Payout Ratio</td><td>DPR</td><td>Dividend policy</td><td>Dividends Paid / Net Income</td></tr>
+          <tr><td>Dividend Yield</td><td>DivYield</td><td>Dividend policy</td><td>Dividends Paid / Total Assets</td></tr>
+          <tr><td>Return on Equity</td><td>ROE</td><td>Profitability control</td><td>Net Income / Total Equity</td></tr>
+          <tr><td>Beta (time-varying)</td><td>&beta;</td><td>Risk control</td><td>Annual OLS regression of monthly stock returns on SPY</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Why Log Total Assets as the Dependent Variable?</h3>
+    <p>Log Assets is a measure of firm size, not firm value. The theoretically correct dependent variable for a dividend relevance test is <strong>Tobin's Q</strong> (market value of assets / book value of assets) or a market-based measure such as log market capitalisation. I use Log Assets as the primary specification because it is consistently available across both data sources, and include Log Market Cap as a robustness check. The limitation is acknowledged directly in the conclusions section.</p>
+
+    <h3>Time-Varying Beta</h3>
+    <p>The first version of this project assigned each firm a single Beta snapshot from yfinance — the same value for every year in the panel. This made Beta perfectly time-invariant, meaning the Fixed Effects estimator absorbed it entirely and it could not be estimated. In this version, Beta is computed annually by regressing each firm's 12 monthly returns against the S&P 500 (SPY) for that calendar year. This produces a genuinely time-varying risk measure and allows Beta to be estimated across all three model specifications.</p>
+  </section>
+
+  <!-- DIAGNOSTICS -->
+  <section>
+    <div class="section-label">Section 2</div>
+    <h2>Multicollinearity Diagnostic</h2>
+    <p>Variance Inflation Factors (VIF) were computed prior to estimation. A VIF below 5 indicates acceptable collinearity; all four variables returned values below 1.09, confirming that multicollinearity is not a concern. Notably, DPR and DivYield — the two dividend policy variables with the most potential for overlap — are essentially independent.</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Variable</th><th class="r">VIF</th><th>Assessment</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>DPR</td><td class="r">1.0722</td><td class="sig">OK</td></tr>
+          <tr><td>DivYield</td><td class="r">1.0815</td><td class="sig">OK</td></tr>
+          <tr><td>ROE</td><td class="r">1.0413</td><td class="sig">OK</td></tr>
+          <tr><td>Beta</td><td class="r">1.0496</td><td class="sig">OK</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- RESULTS -->
+  <section>
+    <div class="section-label">Section 3</div>
+    <h2>Regression Results</h2>
+    <p>Three specifications are estimated: Pooled OLS as a baseline, Fixed Effects (within estimator) controlling for time-invariant firm heterogeneity, and Random Effects as the preferred estimator selected by the Hausman test. All models use firm-level clustered standard errors. Significance: *** p&lt;0.01, ** p&lt;0.05, * p&lt;0.10.</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Variable</th>
+            <th class="r">Pooled OLS</th>
+            <th class="r">Fixed Effects</th>
+            <th class="r">Random Effects†</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>DPR</td>
+            <td class="r insig">−0.0301<br><small>(p=0.552)</small></td>
+            <td class="r insig">0.0036<br><small>(p=0.700)</small></td>
+            <td class="r insig">0.0058<br><small>(p=0.548)</small></td>
+          </tr>
+          <tr>
+            <td>DivYield</td>
+            <td class="r warn">−33.235***<br><small>(p=0.000)</small></td>
+            <td class="r insig">−5.766<br><small>(p=0.328)</small></td>
+            <td class="r insig">−3.079<br><small>(p=0.568)</small></td>
+          </tr>
+          <tr>
+            <td>ROE</td>
+            <td class="r insig">0.0083<br><small>(p=0.959)</small></td>
+            <td class="r sig">−0.0673*<br><small>(p=0.018)</small></td>
+            <td class="r sig">−0.0608*<br><small>(p=0.034)</small></td>
+          </tr>
+          <tr>
+            <td>Beta</td>
+            <td class="r insig">−0.0932<br><small>(p=0.714)</small></td>
+            <td class="r insig">0.0057<br><small>(p=0.766)</small></td>
+            <td class="r insig">0.0102<br><small>(p=0.576)</small></td>
+          </tr>
+          <tr>
+            <td>Constant</td>
+            <td class="r sig">27.500***<br><small>(p=0.000)</small></td>
+            <td class="r">—</td>
+            <td class="r">—</td>
+          </tr>
+          <tr style="border-top:2px solid var(--rule)">
+            <td>R² (Within)</td>
+            <td class="r">0.514</td>
+            <td class="r">0.076</td>
+            <td class="r">0.010</td>
+          </tr>
+          <tr>
+            <td>Observations</td>
+            <td class="r">102</td>
+            <td class="r">102</td>
+            <td class="r">102</td>
+          </tr>
+          <tr>
+            <td>Clustered SE</td>
+            <td class="r">Firm</td>
+            <td class="r">Firm</td>
+            <td class="r">Firm</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p style="font-size:12.5px; color:var(--muted); margin-top:-8px;">† Preferred specification per Hausman Test (p=0.6752). DivYield significance in Pooled OLS is attributable to between-firm heterogeneity captured by the panel estimators.</p>
+
+    <h3>Interpreting the DivYield Result in Pooled OLS</h3>
+    <p>The large, highly significant DivYield coefficient in Pooled OLS (p=0.000) looks striking but is not a genuine finding. It disappears entirely in both Fixed and Random Effects. The explanation is straightforward: firms with low total assets tend to have higher asset-scaled dividend yields by construction, and firms with low total assets have lower log assets. Pooled OLS picks up this between-firm pattern and incorrectly attributes it to dividend policy. Once firm fixed effects are introduced — removing all time-invariant between-firm differences — the signal vanishes. This is a textbook illustration of why pooled OLS is inappropriate for panel data with firm heterogeneity.</p>
+  </section>
+
+  <!-- HAUSMAN -->
+  <section>
+    <div class="section-label">Section 4</div>
+    <h2>Hausman Test — Model Selection</h2>
+    <p>The Hausman test examines whether the unobserved firm-level effects (management quality, business model, competitive position) are correlated with the explanatory variables. If they are, Random Effects produces biased estimates and Fixed Effects is required. The null hypothesis is that RE is consistent.</p>
+
+    <div class="cards">
+      <div class="card">
+        <div class="card-val">2.3309</div>
+        <div class="card-lbl">Chi-squared Statistic</div>
+      </div>
+      <div class="card">
+        <div class="card-val">0.6752</div>
+        <div class="card-lbl">P-value</div>
+      </div>
+      <div class="card">
+        <div class="card-val">4</div>
+        <div class="card-lbl">Degrees of Freedom</div>
+      </div>
+      <div class="card">
+        <div class="card-val">RE</div>
+        <div class="card-lbl">Preferred Estimator</div>
+      </div>
+    </div>
+
+    <p>With p=0.6752 we fail to reject the null at any conventional significance level. Random Effects is therefore the consistent and more efficient estimator for this dataset. The high p-value also has an economic interpretation: firm-level unobservables are not systematically correlated with dividend policy choices, which is itself consistent with the MM view that dividend decisions are largely residual and do not reflect fundamental firm characteristics.</p>
+  </section>
+
+  <!-- ROBUSTNESS -->
+  <section>
+    <div class="section-label">Section 5</div>
+    <h2>Robustness Check</h2>
+    <p>As a robustness check, the Pooled OLS specification was re-estimated using <strong>Log Market Capitalisation</strong> as the dependent variable in place of Log Total Assets. Market cap is a more theoretically appropriate valuation measure for a dividend relevance test, though it introduces the limitation of using a single current snapshot rather than a panel series.</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Variable</th><th class="r">Coefficient</th><th class="r">P-value</th><th>Significant?</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>DPR</td><td class="r">0.0207</td><td class="r">0.729</td><td class="insig">No</td></tr>
+          <tr><td>DivYield</td><td class="r">−2.867</td><td class="r">0.555</td><td class="insig">No</td></tr>
+          <tr><td>ROE</td><td class="r">0.2495</td><td class="r">0.076</td><td class="insig">No (p&gt;0.05)</td></tr>
+          <tr><td>Beta</td><td class="r">0.1982</td><td class="r">0.054</td><td class="insig">No (p&gt;0.05)</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>Neither dividend variable is significant under the market cap specification. The F-statistic p-value of 0.027 indicates the model has some joint explanatory power, driven by Beta and ROE approaching significance, but neither DPR nor DivYield contributes to it. This corroborates the main findings.</p>
+  </section>
+
+  <!-- LIMITATIONS -->
+  <section>
+    <div class="section-label">Section 6</div>
+    <h2>Limitations</h2>
+    <p>A project like this should be judged partly on whether its author understands what it cannot claim. The following limitations are genuine, not performative.</p>
+
+    <div style="margin-top: 24px;">
+
+      <div class="lim-item">
+        <span class="lim-tag">Significant</span>
+        <div class="lim-body">
+          <p><strong>Short time dimension.</strong> Five years (2020–2024) is a short panel. This limits the within-firm variation available to the Fixed and Random Effects estimators and makes results more sensitive to the particular economic conditions of the sample period — which happened to include COVID-19, a period of unusual dividend cuts and restorations that may not be representative of long-run behaviour. Ideally this study would use 10–15 years of data.</p>
+        </div>
+      </div>
+
+      <div class="lim-item">
+        <span class="lim-tag">Significant</span>
+        <div class="lim-body">
+          <p><strong>Log Assets is a size proxy, not a valuation measure.</strong> The MM proposition is about firm value, not firm size. Log Total Assets conflates the two. The robustness check with Log Market Cap partially addresses this but uses a cross-sectional snapshot rather than a panel series. A proper test would use time-varying Tobin's Q.</p>
+        </div>
+      </div>
+
+      <div class="lim-item">
+        <span class="lim-tag">Moderate</span>
+        <div class="lim-body">
+          <p><strong>Hybrid data sourcing.</strong> Using SimFin for 15 firms and yfinance for 10 introduces potential inconsistencies in how accounting items are labelled and adjusted, particularly for IFRS-reporting UK stocks. Results should be interpreted with this caveat in mind.</p>
+        </div>
+      </div>
+
+      <div class="lim-item">
+        <span class="lim-tag ok">Minor</span>
+        <div class="lim-body">
+          <p><strong>Sample selection.</strong> The 25 firms were chosen to represent large-cap value stocks. They are mature, consistently profitable dividend payers. The results may not generalise to growth firms, small-caps, or firms with irregular dividend histories — arguably the more interesting population for dividend relevance tests.</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- CONCLUSION -->
+  <section>
+    <div class="section-label">Section 7</div>
+    <h2>Conclusion</h2>
+    <p>Across all three panel specifications and the robustness check, neither the Dividend Payout Ratio nor Dividend Yield exerts a statistically significant effect on firm valuation. The Hausman test selects Random Effects as the preferred estimator, under which only ROE carries a significant coefficient. The apparently strong DivYield result in Pooled OLS is shown to be spurious — a product of between-firm heterogeneity rather than a genuine dividend signal.</p>
+    <p>These findings are consistent with the Modigliani-Miller dividend irrelevance proposition. For the large-cap value stocks in this sample, investors do not appear to systematically reward or penalise firms on the basis of dividend policy choices, conditional on profitability and systematic risk.</p>
+    <p>Whether this conclusion would hold with a longer time series, a broader sample, or a superior valuation proxy such as Tobin's Q remains an open question — and the most honest summary of what this project can and cannot claim.</p>
+
+    <div class="verdict">
+      <h3>Key Takeaway</h3>
+      <p>Dividend policy does not significantly predict firm valuation within this panel. The result is robust across Fixed Effects, Random Effects, and a market cap robustness check. The Modigliani-Miller irrelevance proposition is supported, with the caveat that a five-year panel of large-cap stocks is not an ideal testing ground for a proposition that assumes frictionless markets and long-run equilibrium.</p>
+    </div>
+  </section>
+
+  <!-- TECHNICAL -->
+  <section>
+    <div class="section-label">Section 8</div>
+    <h2>Technical Notes</h2>
+    <p>The full code is available in the GitHub repository linked below. All analysis was conducted in Python using the following libraries:</p>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Library</th><th>Purpose</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>simfin</td><td>Bulk fundamental data download (income, balance sheet, cash flow)</td></tr>
+          <tr><td>yfinance</td><td>Supplementary fundamentals for 10 firms + SPY benchmark prices</td></tr>
+          <tr><td>linearmodels</td><td>Fixed Effects (PanelOLS) and Random Effects panel estimators</td></tr>
+          <tr><td>statsmodels</td><td>Pooled OLS with clustered standard errors, VIF diagnostics</td></tr>
+          <tr><td>scipy.stats</td><td>Chi-squared distribution for manual Hausman test</td></tr>
+          <tr><td>pandas / numpy</td><td>Data manipulation, ratio engineering, matrix operations</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>Beta was computed by regressing each firm's 12 monthly returns against SPY monthly returns for each calendar year using scipy's <code>linregress</code>. Extreme outliers in DPR, DivYield, and ROE were winsorised at the 1st and 99th percentile prior to estimation.</p>
+  </section>
+
+</div>
+
+<footer>
+  <div>Dividend Relevance Panel Study &middot; BSc Economics &amp; Finance &middot; Personal Project</div>
+  <div>Python &middot; linearmodels &middot; statsmodels &middot; SimFin &middot; yfinance</div>
+</footer>
+
+</body>
+</html>
