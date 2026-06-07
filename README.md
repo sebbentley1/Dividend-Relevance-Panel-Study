@@ -1,8 +1,8 @@
 # Dividend Relevance — Panel Econometric Study
 
-I'm a second year BSc Economics and Finance student. This is a self-directed summer project built to develop practical skills in Python, statistical analysis, and version control.
+I'm a second year BSc Economics and Finance student. This is a solo summer project built to develop practical skills in Python, statistical analysis, and version control.
 
-The theory comes from my Corporate Finance module — Modigliani and Miller's (1961) dividend irrelevance proposition. I wanted to actually test it empirically rather than just write about it in an exam. I had some prior experience with cross-sectional regression from a group project, so panel econometrics felt like a natural next step. I built it in Python and Jupyter Notebook, using AI as a learning tool to get up to speed with syntax I hadn't used before.
+The theory comes from my Corporate Finance module: Modigliani and Miller's (1961) dividend irrelevance proposition. I wanted to actually test it empirically rather than just write about it in an exam. I had some prior experience with cross-sectional regression from a group project, so panel econometrics felt like the natural next step. I built it in Python and Jupyter Notebook, using AI as a tool to get up to speed with syntax I hadn't used before.
 
 **[Read the full report →](report.html)**
 
